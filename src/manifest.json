@@ -6,13 +6,7 @@
     "icons": {
         "48": "icons/icon.png"
     },
-    "permissions": [
-        "tabs",
-        "activeTab",
-        "file://*/*",
-        "https://*/*",
-        "http://*/*"
-    ],
+    "permissions": ["tabs", "activeTab", "file://*/*", "https://*/*", "http://*/*"],
     "commands": {
         "_execute_browser_action": {
             "suggested_key": {
