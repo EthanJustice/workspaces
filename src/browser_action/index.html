@@ -5,13 +5,30 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Workspaces</title>
+        <style>
+            .hidden {
+                display: none;
+            }
+        </style>
     </head>
 
     <body>
         <h1>Workspaces</h1>
-        <div class="sessions"></div>
-        <div class="workspaces"></div>
-        <div class="toolbar"></div>
+        <div class="data">
+            <div class="sessions"></div>
+            <div class="workspaces"></div>
+        </div>
+        <div class="toolbar">
+            <input type="button" value="New Workspace" id="new-workspace" />
+            <div class="new-workspace hidden">
+                <input type="text" id="new-workspace-name" placeholder="Workspace name..." />
+                <div id="new-workspace-urls">
+                    <input type="url" class="new-workspace" />
+                </div>
+                <input type="button" id="add-new-workspace-url-inp" value="+" />
+                <input type="button" id="add-new-workspace-submit" value="Create" />
+            </div>
+        </div>
         <script src="./index.js"></script>
     </body>
 
