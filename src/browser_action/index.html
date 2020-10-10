@@ -5,17 +5,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Workspaces</title>
-        <style>
-            .flex {
-                display: flex;
-                flex-flow: column wrap;
-                flex: 1;
-            }
-
-            .hidden {
-                display: none;
-            }
-        </style>
+        <link rel="stylesheet" type="text/css" href="./index.css" />
     </head>
 
     <body>
@@ -29,7 +19,7 @@
             <div class="new-workspace hidden">
                 <input type="text" id="new-workspace-name" placeholder="Workspace name..." />
                 <div id="new-workspace-urls" class="flex">
-                    <input type="url" class="new-workspace" />
+                    <input type="url" class="new-workspace" placeholder="URL..." />
                 </div>
                 <input type="button" id="add-new-workspace-url-inp" value="+" />
                 <input type="button" id="add-new-workspace-submit" value="Create" />

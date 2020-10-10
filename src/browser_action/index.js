@@ -83,14 +83,15 @@ toolbar.newWorkspace.addEventListener('click', (e) => {
     toolbar.newWorkspaceMenu.newUrl.addEventListener('click', (event) => {
         let newUrlInp = document.createElement('input');
         newUrlInp.type = 'url';
+        newUrlInp.placeholder = 'URL...';
         newUrlInp.classList.add('new-workspace');
         toolbar.newWorkspaceMenu.urls.appendChild(newUrlInp);
     });
 
     toolbar.newWorkspaceMenu.submit.addEventListener('click', (event) => {
-        let urls = Array.from(
-            toolbar.newWorkspaceMenu.container.querySelectorAll('input[type="url"].new-workspace')
-        ).map((i) => i.value);
+        let urls = Array.from(toolbar.newWorkspaceMenu.container.querySelectorAll('input[type="url"].new-workspace'))
+            .filter((i) => i.value.length != 0)
+            .map((i) => i.value);
         createNewWorkspace(urls, toolbar.newWorkspaceMenu.name.value);
     });
 });
