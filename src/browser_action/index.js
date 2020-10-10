@@ -25,22 +25,49 @@ let storage = {
     sessions: [],
 };
 
+const getStorage = () => {
+    return browser.storage.local.get(null);
+};
+
+const launchWorkspace = async (workspace) => {
+    let s = await getStorage();
+    s.workspaces
+        .filter((i) => i.name == workspace)[0]
+        .urls.forEach((url) => {
+            browser.tabs.create({
+                url,
+            });
+        });
+};
+
 (async function () {
     let storage = await browser.storage.local.get(null);
-    if (Object.keys(storage).length == 0) {
-        initStorage();
-    } else {
-        storage = storage;
-        console.log(storage);
-    }
+    try {
+        if (Object.keys(storage).length == 0) {
+            initStorage();
+        } else {
+            storage = storage;
+            storage.workspaces.forEach((item) => {
+                let launch = document.createElement('p');
+                launch.innerText = item.name;
+                launch.addEventListener('click', (e) => {
+                    launchWorkspace(item.name);
+                });
+                workspaces.appendChild(launch);
+            });
+        }
+    } catch (e) {}
 })();
 
 const createNewWorkspace = async (urls, name) => {
-    storage.workspaces.push({
+    let s = await getStorage();
+
+    s.workspaces.push({
         urls,
         name,
     });
-    await browser.storage.local.set(storage);
+
+    await browser.storage.local.set(s);
     try {
         browser.storage.local.get(null).then((d) => console.log(d));
     } catch (err) {
@@ -64,7 +91,6 @@ toolbar.newWorkspace.addEventListener('click', (e) => {
         let urls = Array.from(
             toolbar.newWorkspaceMenu.container.querySelectorAll('input[type="url"].new-workspace')
         ).map((i) => i.value);
-        console.log(urls, toolbar.newWorkspaceMenu.name);
         createNewWorkspace(urls, toolbar.newWorkspaceMenu.name.value);
     });
 });
