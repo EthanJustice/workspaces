@@ -11,6 +11,11 @@ const toolbar = {
         name: document.body.querySelector('#new-workspace-name'),
         urls: document.body.querySelector('#new-workspace-urls'),
     },
+    edit: {
+        container: document.body.querySelector('.edit'),
+        delete: document.body.querySelector('#edit-delete'),
+        urlContainer: document.body.querySelector('#edit-urls'),
+    },
 };
 
 const initStorage = () => {
@@ -29,14 +34,29 @@ const getStorage = () => {
     return browser.storage.local.get(null);
 };
 
+const openEditMenu = (item) => {
+    dataContainer.classList.add('hidden');
+    toolbar.newWorkspace.classList.add('hidden');
+    toolbar.edit.container.classList.remove('hidden');
+};
+
 const showWorkspaces = (storage) => {
     storage.workspaces.forEach((item) => {
-        let launch = document.createElement('p');
+        let container = document.createElement('p');
+
+        let launch = document.createElement('span');
         launch.innerText = item.name;
         launch.addEventListener('click', (e) => {
             launchWorkspace(item.name);
         });
-        workspaces.appendChild(launch);
+
+        let edit = document.createElement('span');
+        edit.innerText = ' | Edit';
+        edit.addEventListener('click', (e) => openEditMenu(item.name));
+
+        container.appendChild(launch);
+        container.appendChild(edit);
+        workspaces.appendChild(container);
     });
 };
 
