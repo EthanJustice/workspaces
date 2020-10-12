@@ -29,6 +29,17 @@ const getStorage = () => {
     return browser.storage.local.get(null);
 };
 
+const showWorkspaces = (storage) => {
+    storage.workspaces.forEach((item) => {
+        let launch = document.createElement('p');
+        launch.innerText = item.name;
+        launch.addEventListener('click', (e) => {
+            launchWorkspace(item.name);
+        });
+        workspaces.appendChild(launch);
+    });
+};
+
 const launchWorkspace = async (workspace) => {
     let s = await getStorage();
     s.workspaces
@@ -47,14 +58,7 @@ const launchWorkspace = async (workspace) => {
             initStorage();
         } else {
             storage = storage;
-            storage.workspaces.forEach((item) => {
-                let launch = document.createElement('p');
-                launch.innerText = item.name;
-                launch.addEventListener('click', (e) => {
-                    launchWorkspace(item.name);
-                });
-                workspaces.appendChild(launch);
-            });
+            showWorkspaces(storage);
         }
     } catch (e) {}
 })();
@@ -68,8 +72,8 @@ const createNewWorkspace = async (urls, name) => {
     });
 
     await browser.storage.local.set(s);
+    showWorkspaces(s);
     try {
-        browser.storage.local.get(null).then((d) => console.log(d));
     } catch (err) {
         console.error(err);
     }
@@ -88,10 +92,13 @@ toolbar.newWorkspace.addEventListener('click', (e) => {
         toolbar.newWorkspaceMenu.urls.appendChild(newUrlInp);
     });
 
-    toolbar.newWorkspaceMenu.submit.addEventListener('click', (event) => {
+    toolbar.newWorkspaceMenu.submit.addEventListener('click', async (event) => {
         let urls = Array.from(toolbar.newWorkspaceMenu.container.querySelectorAll('input[type="url"].new-workspace'))
             .filter((i) => i.value.length != 0)
             .map((i) => i.value);
         createNewWorkspace(urls, toolbar.newWorkspaceMenu.name.value);
+        toolbar.newWorkspaceMenu.container.classList.add('hidden');
+        dataContainer.classList.remove('hidden');
+        toolbar.newWorkspace.classList.remove('hidden');
     });
 });
