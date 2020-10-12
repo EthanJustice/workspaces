@@ -4,7 +4,7 @@
     "description": "Launch, navigate, and save workspaces",
     "version": "0.0.1",
     "icons": {
-        "48": "icons/icon.png"
+        "48": "icon.png"
     },
     "permissions": ["tabs", "activeTab", "storage", "file://*/*", "https://*/*", "http://*/*"],
     "commands": {
@@ -17,7 +17,7 @@
     },
     "browser_action": {
         "default_icon": {
-            "19": "icons/icon.png"
+            "19": "icon.png"
         },
         "default_title": "Workspaces",
         "default_popup": "browser_action/index.html"
