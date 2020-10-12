@@ -92,6 +92,12 @@ toolbar.newWorkspace.addEventListener('click', (e) => {
         toolbar.newWorkspaceMenu.urls.appendChild(newUrlInp);
     });
 
+    toolbar.newWorkspaceMenu.name.addEventListener('input', (e) =>
+        toolbar.newWorkspaceMenu.name.value.length > 0
+            ? toolbar.newWorkspaceMenu.submit.removeAttribute('disabled')
+            : toolbar.newWorkspaceMenu.submit.setAttribute('disabled', '')
+    );
+
     toolbar.newWorkspaceMenu.submit.addEventListener('click', async (event) => {
         let urls = Array.from(toolbar.newWorkspaceMenu.container.querySelectorAll('input[type="url"].new-workspace'))
             .filter((i) => i.value.length != 0)

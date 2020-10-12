@@ -57,3 +57,6 @@ input[type='button']:hover {
     cursor: pointer;
     background: var(--highlight);
 }
+:disabled {
+    opacity: 0.7;
+}
