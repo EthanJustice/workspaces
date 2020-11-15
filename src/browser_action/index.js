@@ -35,14 +35,18 @@ const getStorage = (key) => {
 };
 
 const openEditMenu = async (item) => {
+    toolbar.edit.container.dataset.editing = item;
+
     dataContainer.classList.add('hidden');
     toolbar.newWorkspace.classList.add('hidden');
     toolbar.edit.container.classList.remove('hidden');
 
     toolbar.edit.delete.addEventListener('click', async (e) => {
         let s = await getStorage();
-        s.workspaces.filter((i) => i.name != item);
-        await browser.storage.local.set(s);
+        s.workspaces = s.workspaces.filter((i) => i.name != item);
+        try {
+            await browser.storage.local.set(s);
+        } catch (err) {}
     });
 };
 
