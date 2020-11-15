@@ -30,33 +30,46 @@ let storage = {
     sessions: [],
 };
 
-const getStorage = () => {
-    return browser.storage.local.get(null);
+const getStorage = (key) => {
+    return browser.storage.local.get(key || null);
 };
 
-const openEditMenu = (item) => {
+const openEditMenu = async (item) => {
     dataContainer.classList.add('hidden');
     toolbar.newWorkspace.classList.add('hidden');
     toolbar.edit.container.classList.remove('hidden');
+
+    toolbar.edit.delete.addEventListener('click', async (e) => {
+        let s = await getStorage();
+        s.workspaces.filter((i) => i.name != item);
+        await browser.storage.local.set(s);
+    });
 };
 
 const showWorkspaces = (storage) => {
     storage.workspaces.forEach((item) => {
-        let container = document.createElement('p');
+        let container = document.createElement('tr');
 
-        let launch = document.createElement('span');
-        launch.innerText = item.name;
+        let name = document.createElement('td');
+        name.innerText = item.name;
+
+        let launch = document.createElement('td');
+        launch.innerText = 'Launch';
+        launch.classList.add('launch-btn');
+
         launch.addEventListener('click', (e) => {
             launchWorkspace(item.name);
         });
 
-        let edit = document.createElement('span');
-        edit.innerText = ' | Edit';
+        let edit = document.createElement('td');
+        edit.innerText = 'Edit';
+        edit.classList.add('edit-btn');
         edit.addEventListener('click', (e) => openEditMenu(item.name));
 
+        container.appendChild(name);
         container.appendChild(launch);
         container.appendChild(edit);
-        workspaces.appendChild(container);
+        workspaces.querySelector('table').appendChild(container);
     });
 };
 
@@ -84,19 +97,21 @@ const launchWorkspace = async (workspace) => {
 })();
 
 const createNewWorkspace = async (urls, name) => {
-    let s = await getStorage();
-
-    s.workspaces.push({
-        urls,
-        name,
-    });
-
-    await browser.storage.local.set(s);
-    showWorkspaces(s);
     try {
-    } catch (err) {
-        console.error(err);
-    }
+        let s = await getStorage();
+
+        s.workspaces.push({
+            urls,
+            name,
+        });
+
+        try {
+            await browser.storage.local.set(s);
+            showWorkspaces(s);
+        } catch (err) {
+            console.error(err);
+        }
+    } catch (err) {}
 };
 
 toolbar.newWorkspace.addEventListener('click', (e) => {

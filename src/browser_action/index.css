@@ -60,3 +60,7 @@ input[type='button']:hover {
 :disabled {
     opacity: 0.7;
 }
+.launch-btn,
+.edit-btn {
+    cursor: pointer;
+}
