@@ -1,5 +1,6 @@
 import { dataContainer, sessions, workspaces, toolbar } from './layout.js';
 
+// initialise an empty storage structure in the browser's extensionStorage
 const initStorage = () => {
     browser.storage.local.set({
         workspaces: [],
@@ -7,22 +8,23 @@ const initStorage = () => {
     });
 };
 
-let storage = {
-    workspaces: [],
-    sessions: [],
-};
-
+// show an error message visually
 const showError = (msg) => {
     toolbar.error.message.innerText = msg;
     toolbar.error.container.classList.remove('hidden');
     setTimeout(() => toolbar.error.container.classList.add('hidden'), 3000);
 };
 
+// generic utility method to get the list of sessions and workspaces
 const getStorage = (key) => {
     return browser.storage.local.get(key || null);
 };
 
+// show all workspaces
 const showWorkspaces = (storage) => {
+    // remove previous children, as they may be outdated
+    Array.from(workspaces.children).forEach((i) => i.remove());
+
     storage.workspaces.forEach((item) => {
         let container = document.createElement('tr');
 
@@ -49,6 +51,7 @@ const showWorkspaces = (storage) => {
     });
 };
 
+// opens all URLs in the specified workspace
 const launchWorkspace = async (workspace) => {
     let s = await getStorage();
     s.workspaces
@@ -60,6 +63,7 @@ const launchWorkspace = async (workspace) => {
         });
 };
 
+// saves a new workspace to the browser's extensionStorage
 const createNewWorkspace = async (urls, name) => {
     try {
         let s = await getStorage();
@@ -75,9 +79,12 @@ const createNewWorkspace = async (urls, name) => {
         } catch (err) {
             showError('Something went wrong while creating a new workspace.');
         }
-    } catch (err) {}
+    } catch (err) {
+        showError('Failed to load saved workspaces.');
+    }
 };
 
+// open the edit menu
 const openEditMenu = async (item) => {
     toolbar.edit.container.dataset.editing = item;
 
@@ -90,16 +97,20 @@ const openEditMenu = async (item) => {
         s.workspaces = s.workspaces.filter((i) => i.name != item);
         try {
             await browser.storage.local.set(s);
+
             toolbar.edit.container.classList.add('hidden');
             toolbar.parent.classList.remove('hidden');
             toolbar.newWorkspace.classList.remove('hidden');
-            Array.from(dataContainer.children).forEach((i) => i.remove());
+
             showWorkspaces(s);
             dataContainer.classList.remove('hidden');
-        } catch (err) {}
+        } catch (err) {
+            showError('Failed to save your changes.');
+        }
     });
 };
 
+// show the new workspace menu
 toolbar.newWorkspace.addEventListener('click', (e) => {
     dataContainer.classList.add('hidden');
     toolbar.newWorkspace.classList.add('hidden');
@@ -130,6 +141,7 @@ toolbar.newWorkspace.addEventListener('click', (e) => {
     });
 });
 
+// initialises skeleton storage if the user is new, otherwise shows all workspaces
 (async function () {
     let storage = await browser.storage.local.get(null);
     try {
@@ -139,5 +151,7 @@ toolbar.newWorkspace.addEventListener('click', (e) => {
             storage = storage;
             showWorkspaces(storage);
         }
-    } catch (e) {}
+    } catch (e) {
+        showError("Couldn't open your workspaces.");
+    }
 })();

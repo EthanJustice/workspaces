@@ -1,3 +1,4 @@
+/* light mode (default) */
 :root {
     --highlight: #16c581;
     --primary: #fafafa;
@@ -5,6 +6,7 @@
     --tertiary: #b9bec5;
 }
 
+/* dark mode theme */
 @media (prefers-color-scheme: dark) {
     :root {
         --primary: #212121;
@@ -32,12 +34,14 @@ h6 {
     font-weight: lighter;
 }
 
+/* flex utility class */
 .flex {
     display: flex;
     flex-flow: column wrap;
     flex: 1;
 }
 
+/* utility class to easily hide elements */
 .hidden {
     display: none;
 }
@@ -60,6 +64,7 @@ input[type='button']:hover {
 :disabled {
     opacity: 0.7;
 }
+
 .launch-btn,
 .edit-btn {
     cursor: pointer;

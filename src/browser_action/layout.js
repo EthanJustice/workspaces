@@ -1,6 +1,12 @@
+// contains JS bindings for HTML elements from index.html
+
+// user's sessions and workspaces
 const dataContainer = document.body.querySelector('.data');
+// user's sessions (child of dataContainer)
 const sessions = document.body.querySelector('.sessions');
+// user's workspaces (child of dataContainer)
 const workspaces = document.body.querySelector('.workspaces');
+// tools for editing workspaces and sessions
 const toolbar = {
     error: {
         container: document.body.querySelector('.error-container'),
