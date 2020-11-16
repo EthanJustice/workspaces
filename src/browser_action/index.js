@@ -1,22 +1,4 @@
-const dataContainer = document.body.querySelector('.data');
-const sessions = document.body.querySelector('.sessions');
-const workspaces = document.body.querySelector('.workspaces');
-const toolbar = {
-    parent: document.body.querySelector('.toolbar'),
-    newWorkspace: document.body.querySelector('.toolbar input[type="button"][id="new-workspace"]'),
-    newWorkspaceMenu: {
-        container: document.body.querySelector('.new-workspace'),
-        newUrl: document.body.querySelector('#add-new-workspace-url-inp'),
-        submit: document.body.querySelector('#add-new-workspace-submit'),
-        name: document.body.querySelector('#new-workspace-name'),
-        urls: document.body.querySelector('#new-workspace-urls'),
-    },
-    edit: {
-        container: document.body.querySelector('.edit'),
-        delete: document.body.querySelector('#edit-delete'),
-        urlContainer: document.body.querySelector('#edit-urls'),
-    },
-};
+import { dataContainer, sessions, workspaces, toolbar } from './layout.js';
 
 const initStorage = () => {
     browser.storage.local.set({
@@ -30,24 +12,14 @@ let storage = {
     sessions: [],
 };
 
-const getStorage = (key) => {
-    return browser.storage.local.get(key || null);
+const showError = (msg) => {
+    toolbar.error.message.innerText = msg;
+    toolbar.error.container.classList.remove('hidden');
+    setTimeout(() => toolbar.error.container.classList.add('hidden'), 3000);
 };
 
-const openEditMenu = async (item) => {
-    toolbar.edit.container.dataset.editing = item;
-
-    dataContainer.classList.add('hidden');
-    toolbar.newWorkspace.classList.add('hidden');
-    toolbar.edit.container.classList.remove('hidden');
-
-    toolbar.edit.delete.addEventListener('click', async (e) => {
-        let s = await getStorage();
-        s.workspaces = s.workspaces.filter((i) => i.name != item);
-        try {
-            await browser.storage.local.set(s);
-        } catch (err) {}
-    });
+const getStorage = (key) => {
+    return browser.storage.local.get(key || null);
 };
 
 const showWorkspaces = (storage) => {
@@ -88,18 +60,6 @@ const launchWorkspace = async (workspace) => {
         });
 };
 
-(async function () {
-    let storage = await browser.storage.local.get(null);
-    try {
-        if (Object.keys(storage).length == 0) {
-            initStorage();
-        } else {
-            storage = storage;
-            showWorkspaces(storage);
-        }
-    } catch (e) {}
-})();
-
 const createNewWorkspace = async (urls, name) => {
     try {
         let s = await getStorage();
@@ -113,9 +73,31 @@ const createNewWorkspace = async (urls, name) => {
             await browser.storage.local.set(s);
             showWorkspaces(s);
         } catch (err) {
-            console.error(err);
+            showError('Something went wrong while creating a new workspace.');
         }
     } catch (err) {}
+};
+
+const openEditMenu = async (item) => {
+    toolbar.edit.container.dataset.editing = item;
+
+    dataContainer.classList.add('hidden');
+    toolbar.newWorkspace.classList.add('hidden');
+    toolbar.edit.container.classList.remove('hidden');
+
+    toolbar.edit.delete.addEventListener('click', async (e) => {
+        let s = await getStorage();
+        s.workspaces = s.workspaces.filter((i) => i.name != item);
+        try {
+            await browser.storage.local.set(s);
+            toolbar.edit.container.classList.add('hidden');
+            toolbar.parent.classList.remove('hidden');
+            toolbar.newWorkspace.classList.remove('hidden');
+            Array.from(dataContainer.children).forEach((i) => i.remove());
+            showWorkspaces(s);
+            dataContainer.classList.remove('hidden');
+        } catch (err) {}
+    });
 };
 
 toolbar.newWorkspace.addEventListener('click', (e) => {
@@ -147,3 +129,15 @@ toolbar.newWorkspace.addEventListener('click', (e) => {
         toolbar.newWorkspace.classList.remove('hidden');
     });
 });
+
+(async function () {
+    let storage = await browser.storage.local.get(null);
+    try {
+        if (Object.keys(storage).length == 0) {
+            initStorage();
+        } else {
+            storage = storage;
+            showWorkspaces(storage);
+        }
+    } catch (e) {}
+})();
