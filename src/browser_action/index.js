@@ -23,7 +23,7 @@ const getStorage = (key) => {
 // show all workspaces
 const showWorkspaces = (storage) => {
     // remove previous children, as they may be outdated
-    Array.from(workspaces.children).forEach((i) => i.remove());
+    Array.from(workspaces.querySelector('table').children).forEach((i) => i.remove());
 
     storage.workspaces.forEach((item) => {
         let container = document.createElement('tr');
@@ -143,8 +143,8 @@ toolbar.newWorkspace.addEventListener('click', (e) => {
 
 // initialises skeleton storage if the user is new, otherwise shows all workspaces
 (async function () {
-    let storage = await browser.storage.local.get(null);
     try {
+        let storage = await browser.storage.local.get(null);
         if (Object.keys(storage).length == 0) {
             initStorage();
         } else {
@@ -152,6 +152,7 @@ toolbar.newWorkspace.addEventListener('click', (e) => {
             showWorkspaces(storage);
         }
     } catch (e) {
-        showError("Couldn't open your workspaces.");
+        console.error(e);
+        showError('Failed to open your workspaces.');
     }
 })();
