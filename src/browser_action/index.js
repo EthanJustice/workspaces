@@ -94,29 +94,67 @@ const createNewWorkspace = async (urls, name) => {
 };
 
 // open the edit menu
+// argument is the name of the workspace to open
 const openEditMenu = async (item) => {
-    toolbar.edit.container.dataset.editing = item;
-
-    dataContainer.classList.add('hidden');
-    toolbar.newWorkspace.classList.add('hidden');
-    toolbar.edit.container.classList.remove('hidden');
-
-    toolbar.edit.delete.addEventListener('click', async (e) => {
+    try {
         let s = await getStorage();
-        s.workspaces = s.workspaces.filter((i) => i.name != item);
-        try {
-            await browser.storage.local.set(s);
+        let current = s.workspaces.find((i) => i.name == item);
 
+        current.urls.forEach((i) => {
+            let element = document.createElement('tr');
+
+            let url = document.createElement('td');
+            url.innerText = i;
+
+            let remove = document.createElement('td');
+            remove.innerText = 'X';
+            remove.addEventListener('click', () => {
+                url.style.textDecoration = 'line-through';
+            });
+
+            element.appendChild(url);
+            element.appendChild(remove);
+
+            toolbar.edit.urlContainer.querySelector('table').appendChild(element);
+        });
+
+        toolbar.edit.save.addEventListener('click', async () => {
+            let kept = Array.from(toolbar.edit.urlContainer.children).filter(
+                (i) => getComputedStyle(i.firstElementChild).textDecoration != 'line-through'
+            );
+            current.urls = s.workspaces.find((i) => i.name == item).urls.filter((i) => kept.indexOf(i) != -1);
+            try {
+                await browser.storage.local.set(s);
+                toolbar.edit.save.setAttribute('disabled', true);
+            } catch (err) {
+                showError('Failed to save your changes.');
+            }
+        });
+
+        toolbar.edit.container.dataset.editing = item;
+
+        dataContainer.classList.add('hidden');
+        toolbar.newWorkspace.classList.add('hidden');
+        toolbar.edit.container.classList.remove('hidden');
+
+        toolbar.edit.delete.addEventListener('click', async (e) => {
+            s.workspaces = s.workspaces.filter((i) => i.name != item);
+            try {
+                await browser.storage.local.set(s);
+
+                showMain();
+                dataContainer.classList.remove('hidden');
+            } catch (err) {
+                showError('Failed to save your changes.');
+            }
+        });
+
+        toolbar.edit.back.addEventListener('click', () => {
             showMain();
-            dataContainer.classList.remove('hidden');
-        } catch (err) {
-            showError('Failed to save your changes.');
-        }
-    });
-
-    toolbar.edit.back.addEventListener('click', () => {
-        showMain();
-    });
+        });
+    } catch (err) {
+        showError('Failed to load this workspace.');
+    }
 };
 
 // show the new workspace menu
@@ -161,7 +199,6 @@ toolbar.newWorkspace.addEventListener('click', (e) => {
             showWorkspaces(storage);
         }
     } catch (e) {
-        console.error(e);
         showError('Failed to open your workspaces.');
     }
 })();

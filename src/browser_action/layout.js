@@ -26,6 +26,7 @@ const toolbar = {
         delete: document.body.querySelector('#edit-delete'),
         back: document.body.querySelector('#edit-back'),
         urlContainer: document.body.querySelector('#edit-urls'),
+        save: document.body.querySelector('#edit-save'),
     },
 };
 
