@@ -24,6 +24,7 @@ const toolbar = {
     edit: {
         container: document.body.querySelector('.edit'),
         delete: document.body.querySelector('#edit-delete'),
+        back: document.body.querySelector('#edit-back'),
         urlContainer: document.body.querySelector('#edit-urls'),
     },
 };

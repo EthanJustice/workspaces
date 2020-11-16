@@ -20,6 +20,15 @@ const getStorage = (key) => {
     return browser.storage.local.get(key || null);
 };
 
+// shows the main menu
+const showMain = async () => {
+    toolbar.edit.container.classList.add('hidden');
+    toolbar.parent.classList.remove('hidden');
+    toolbar.newWorkspace.classList.remove('hidden');
+
+    showWorkspaces(await getStorage());
+};
+
 // show all workspaces
 const showWorkspaces = (storage) => {
     // remove previous children, as they may be outdated
@@ -98,15 +107,15 @@ const openEditMenu = async (item) => {
         try {
             await browser.storage.local.set(s);
 
-            toolbar.edit.container.classList.add('hidden');
-            toolbar.parent.classList.remove('hidden');
-            toolbar.newWorkspace.classList.remove('hidden');
-
-            showWorkspaces(s);
+            showMain();
             dataContainer.classList.remove('hidden');
         } catch (err) {
             showError('Failed to save your changes.');
         }
+    });
+
+    toolbar.edit.back.addEventListener('click', () => {
+        showMain();
     });
 };
 
