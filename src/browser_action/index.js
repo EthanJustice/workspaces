@@ -180,7 +180,7 @@ toolbar.newWorkspace.addEventListener('click', (e) => {
     toolbar.newWorkspaceMenu.submit.addEventListener('click', async (event) => {
         let urls = Array.from(toolbar.newWorkspaceMenu.container.querySelectorAll('input[type="url"].new-workspace'))
             .filter((i) => i.value.length != 0)
-            .map((i) => i.value);
+            .map((i) => (i.value.startsWith('http') ? i.value : `http://${i.value}`));
         createNewWorkspace(urls, toolbar.newWorkspaceMenu.name.value);
         toolbar.newWorkspaceMenu.container.classList.add('hidden');
         dataContainer.classList.remove('hidden');

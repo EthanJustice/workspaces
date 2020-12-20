@@ -1,12 +1,12 @@
 {
     "manifest_version": 2,
     "name": "Workspaces",
-    "description": "Launch, navigate, and save workspaces",
+    "description": "Launch, navigate, and save workspaces.",
     "version": "0.0.1",
     "icons": {
         "48": "icon.png"
     },
-    "permissions": ["tabs", "activeTab", "storage", "file://*/*", "https://*/*", "http://*/*"],
+    "permissions": ["tabs", "activeTab", "storage", "https://*/*", "http://*/*"],
     "commands": {
         "_execute_browser_action": {
             "suggested_key": {

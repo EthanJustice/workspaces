@@ -9,11 +9,11 @@ For example, a work category may have an email service, Git provider, and compan
 + [Usage](#usage)
 + [Roadmap](#roadmap)
 
-![workspaces' icon](./src/icon.png)
+![workspace icon](./src/icon.png)
 
 ## Usage
 
-**PLEASE NOTE**: Workspaces is in early development, and as such, is not listed on **any** extension store.
+**PLEASE NOTE**: Workspaces is in early development, and as such, doesn't have an extension listing **anywhere**.
 
 Press `Ctrl+Alt+A` to open the popup, or press the icon in the browser menu.
 
@@ -21,7 +21,7 @@ Press `Ctrl+Alt+A` to open the popup, or press the icon in the browser menu.
 
 To set up for development:
 
-1. Clone the source
+1. Clone the source (`git clone https://github.com/EthanJustice/workspaces.git`)
 2. Open `about:debugging` in Firefox
 3. Under `Temporary Extensions`, press `Load Temporary Add-On...`
 4. Open the `manifest.json` file in the `src` directory
