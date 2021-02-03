@@ -9,7 +9,7 @@ For example, a work category may have an email service, Git provider, and compan
 + [Usage](#usage)
 + [Roadmap](#roadmap)
 
-![workspace icon](./src/icon.png)
+![workspace icon](./meta/icon.png)
 
 ## Usage
 
