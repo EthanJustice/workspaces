@@ -1,26 +1,7 @@
+import 'alpinejs';
 import { browser } from 'webextension-polyfill-ts';
 
-import { dataContainer, workspaces, toolbar } from './layout';
-
-interface Storage {
-    workspaces: Workspace[];
-    sessions: Session[];
-}
-
-interface Workspace {
-    urls: string[];
-    name: string;
-}
-
-interface Session {}
-
-// initialise an empty storage structure in the browser's extensionStorage
-const initStorage = () => {
-    browser.storage.local.set({
-        workspaces: [],
-        sessions: [],
-    });
-};
+import { Storage } from './util';
 
 // show an error message visually
 const showError = (msg: string) => {
@@ -51,7 +32,7 @@ const showWorkspaces = (storage: Storage) => {
         Array.from(workspaces.querySelector('table').children).forEach((i) => i.remove());
     }
 
-    storage.workspaces.forEach((item: Workspace) => {
+    storage.workspaces.forEach((item: Storage.Workspace) => {
         let container = document.createElement('tr');
 
         let name = document.createElement('td');
@@ -80,7 +61,7 @@ const showWorkspaces = (storage: Storage) => {
 // opens all URLs in the specified workspace
 const launchWorkspace = async (workspace: string) => {
     try {
-        let s: Storage = await getStorage();
+        let s: Storage.Storage = await getStorage();
         s.workspaces
             .filter((i) => i.name == workspace)[0]
             .urls.forEach((url) => {
@@ -116,7 +97,7 @@ const createNewWorkspace = async (urls: string[], name: string) => {
 // argument is the name of the workspace to open
 const openEditMenu = async (item: string) => {
     try {
-        let s: Storage = await getStorage();
+        let s: Storage.Storage = await getStorage();
         let current = s.workspaces.find((i) => i.name == item);
 
         if (typeof current == 'undefined') {
@@ -189,7 +170,6 @@ const openEditMenu = async (item: string) => {
 
 // show the new workspace menu
 toolbar.newWorkspace.addEventListener('click', () => {
-    console.log('Clicked');
     dataContainer.classList.add('hidden');
     toolbar.newWorkspace.classList.add('hidden');
     toolbar.newWorkspaceMenu.container.classList.remove('hidden');
@@ -236,11 +216,11 @@ toolbar.newWorkspace.addEventListener('click', () => {
     try {
         let storage = await browser.storage.local.get(null);
         if (Object.keys(storage).length == 0) {
-            initStorage();
+            Storage.initStorage();
         } else {
             storage = storage;
             // todo: fix type error
-            // @ts-expect-error
+            //@ts-ignore
             showWorkspaces(storage);
         }
     } catch (_e) {
